@@ -1,0 +1,95 @@
+<Window x:Class="Vereinssoftware.App.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="clr-namespace:Vereinssoftware.App.Views"
+        xmlns:viewmodels="clr-namespace:Vereinssoftware.App.ViewModels"
+        Title="Vereinssoftware" 
+        Height="600" Width="900"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <DataTemplate x:Key="MemberManagementTemplate">
+            <views:MemberManagementView/>
+        </DataTemplate>
+        <DataTemplate x:Key="UserManagementTemplate">
+            <views:UserManagementView/>
+        </DataTemplate>
+        <DataTemplate x:Key="ClubManagementTemplate">
+            <views:ClubManagementView/>
+        </DataTemplate>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Top Menu Bar -->
+        <Border Grid.Row="0" Background="#2196F3" Padding="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <Button Content="Mitglieder" Command="{Binding ShowMembersCommand}" 
+                            Style="{StaticResource MenuButtonStyle}" Margin="5,0"/>
+                    <Button Content="Benutzer" Command="{Binding ShowUsersCommand}" 
+                            Style="{StaticResource MenuButtonStyle}" Margin="5,0"
+                            Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    <Button Content="Verein" Command="{Binding ShowClubCommand}" 
+                            Style="{StaticResource MenuButtonStyle}" Margin="5,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <TextBlock Text="{Binding CurrentUserName}" 
+                               Foreground="White" 
+                               VerticalAlignment="Center"
+                               Margin="0,0,10,0"/>
+                    <Button Content="Abmelden" Command="{Binding LogoutCommand}" 
+                            Style="{StaticResource MenuButtonStyle}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Content Area -->
+        <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}">
+            <ContentControl.ContentTemplate>
+                <DataTemplate>
+                    <ContentControl Content="{Binding}">
+                        <ContentControl.Style>
+                            <Style TargetType="ContentControl">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                        <Setter Property="ContentTemplate" Value="{x:Null}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding}" Value="{x:Type viewmodels:MemberManagementViewModel}">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource MemberManagementTemplate}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding}" Value="{x:Type viewmodels:UserManagementViewModel}">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource UserManagementTemplate}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding}" Value="{x:Type viewmodels:ClubManagementViewModel}">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource ClubManagementTemplate}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
+                </DataTemplate>
+            </ContentControl.ContentTemplate>
+        </ContentControl>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="2" Background="#F5F5F5" Padding="10,5">
+            <TextBlock>
+                <Run Text="Benutzer: "/>
+                <Run Text="{Binding CurrentUserName}" FontWeight="Bold"/>
+                <Run Text=" | Rolle: "/>
+                <Run Text="{Binding CurrentUserRole}" FontWeight="Bold"/>
+            </TextBlock>
+        </Border>
+    </Grid>
+</Window>
