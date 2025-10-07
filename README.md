@@ -48,10 +48,6 @@ dotnet build Vereinssoftware.sln
 dotnet run --project Vereinssoftware.App
 ```
 
-### Standard-Login
-
-- **Benutzername**: admin
-- **Passwort**: admin
 
 ## Benutzerrollen
 
